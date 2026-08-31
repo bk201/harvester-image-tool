@@ -1,0 +1,25 @@
+---
+apiVersion: v1
+binaryData:
+  # trimmed from the real ~208KB base64 blob; only metadata below is parsed
+  components: H4sIAAAAAAAA/+z9a38bN5IojL/Pp8DR7FlJWZKyk0l2R+TRUNSMlxrbccyD7NnNq4wPmk10SzC7SQ8ANii++f/9BdBAv6Aljd/hfsGpKPYD3ZQljfM4Z04SsdEA6qGqUFVAVdWfvv/hRTF+MctSPr4YfffdMEqSNIrpP9mvOsMoY99qgpvfsyhh2QUvsjLnI9G4iOJRxvOL6NmoLLIvhkP1Vw4a3Q6oe+3XujceRvHo3z5/YsPh//uPKB9myfjfjZ+/e/xNlk/O/vG/vVw+e0zi7Pv7B/eu3fj+xn/+P08fbfzn9ez/Xjm5+K/n
+data:
+  metadata: |
+    # maps release series of major.minor to cluster-api contract version
+    apiVersion: clusterctl.cluster.x-k8s.io/v1alpha3
+    kind: Metadata
+    releaseSeries:
+      - major: 1
+        minor: 13
+        contract: v1beta2
+kind: ConfigMap
+metadata:
+  annotations:
+    provider.cluster.x-k8s.io/compressed: "true"
+  labels:
+    provider.cluster.x-k8s.io/name: cluster-api
+    provider.cluster.x-k8s.io/type: core
+    provider.cluster.x-k8s.io/version: v1.13.3
+    managed-by.turtles.cattle.io: "true"
+  name: core-cluster-api-v1.13.3
+  namespace: cattle-capi-system

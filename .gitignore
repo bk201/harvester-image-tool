@@ -1,0 +1,5 @@
+/bin
+*.swp
+.idea
+.DS_Store
+/scripts/.version_env

@@ -1,0 +1,28 @@
+version: 2
+linters:
+  disable-all: true
+  enable:
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - misspell
+    - prealloc
+  formatters:
+    enable:
+      - gofmt
+  settings:
+    gosec:
+      # https://github.com/securego/gosec#available-rules
+      config:
+        G306: "0644" # Poor file permissions used when writing to a new file
+  exclusions:
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+run:
+  timeout: 5m
+  tests: true

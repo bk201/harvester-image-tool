@@ -1,0 +1,16 @@
+#!/bin/bash
+set -e
+
+source $(dirname $0)/version
+
+cd $(dirname $0)/..
+
+mkdir -p bin
+if [ "$(uname)" = "Linux" ]; then
+    OTHER_LINKFLAGS="-extldflags -static -s"
+fi
+
+LINKFLAGS="-X github.com/bk201/image-tool/pkg/version.Version=$VERSION
+           -X github.com/bk201/image-tool/pkg/version.GitCommit=$COMMIT $OTHER_LINKFLAGS"
+
+CGO_ENABLED=0 go build -ldflags "$LINKFLAGS" -o bin/image-tool .
