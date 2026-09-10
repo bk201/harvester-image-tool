@@ -3,6 +3,13 @@ package createlist
 import (
 	"bytes"
 	"context"
+	"io"
+	"net/http"
+	"strings"
+	"time"
+
+	rootcmd "github.com/bk201/image-tool/cmd"
+	"github.com/bk201/image-tool/pkg/subsystem/ranchercharts"
 	"os"
 	"path/filepath"
 	"testing"
@@ -40,6 +47,7 @@ func (f *fakeSubsystem) Verify(_ context.Context, _ subsystem.Options, images []
 }
 
 func resetFlags() {
+	chartBranch = ""
 	outputPath = ""
 	noVerify = false
 	strict = false
@@ -163,4 +171,72 @@ func TestRun_WritesToOutputFile(t *testing.T) {
 	content, err := os.ReadFile(outputPath)
 	require.NoError(t, err)
 	assert.Equal(t, "# subsystem: cmdtest-outfile\n# version: v1.0.0\na/img:v1\n", string(content))
+}
+
+// fixtureTransport exercises run's real HTTP fetcher and flag forwarding while
+// serving only committed fixtures. Unexpected URLs fail without network access.
+type fixtureTransport struct {
+	calls []string
+}
+
+func (f *fixtureTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	f.calls = append(f.calls, r.URL.String())
+	parts := strings.SplitN(strings.TrimPrefix(r.URL.Path, "/rancher/charts/test-branch/charts/"), "/", 3)
+	if len(parts) != 3 || !strings.HasPrefix(r.URL.Path, "/rancher/charts/test-branch/charts/") {
+		return nil, assert.AnError
+	}
+	p := filepath.Join("../../pkg/subsystem/ranchercharts/testdata", parts[0], parts[2])
+	body, err := os.ReadFile(p)
+	if err != nil {
+		return nil, err
+	}
+	return &http.Response{StatusCode: 200, Body: io.NopCloser(bytes.NewReader(body)), Header: http.Header{}, Request: r}, nil
+}
+
+func TestChartSubsystemCLI(t *testing.T) {
+	resetFlags()
+	t.Cleanup(resetFlags)
+	transport := &fixtureTransport{}
+	oldTransport, oldInterval := http.DefaultTransport, rootcmd.MinRequestInterval
+	http.DefaultTransport = transport
+	rootcmd.MinRequestInterval = time.Nanosecond
+	t.Cleanup(func() { http.DefaultTransport = oldTransport; rootcmd.MinRequestInterval = oldInterval })
+	subsystem.Register(ranchercharts.NewLogging())
+	subsystem.Register(ranchercharts.NewMonitoring())
+	RegisterSubsystemFlags()
+	require.NotNil(t, command.Flags().Lookup("chart-branch"))
+	assert.Contains(t, command.Long, "rancher-logging")
+	assert.Contains(t, command.Long, "rancher-monitoring")
+	for _, tc := range []struct {
+		name, version string
+		count         int
+	}{
+		{"rancher-monitoring", "109.0.3+up80.9.1-rancher.14", 16},
+		{"rancher-logging", "109.0.0+up4.10.0-rancher.23", 4},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			resetFlags()
+			outputPath = filepath.Join(t.TempDir(), "images.txt")
+			require.NoError(t, os.WriteFile(outputPath, []byte("existing\n"), 0600))
+			var out bytes.Buffer
+			err := run(newTestCmd(&out), []string{tc.name, tc.version})
+			require.ErrorContains(t, err, "--chart-branch")
+			body, err := os.ReadFile(outputPath)
+			require.NoError(t, err)
+			assert.Equal(t, "existing\n", string(body))
+			require.NoError(t, command.Flags().Set("chart-branch", "test-branch"))
+			noHeader = true
+			require.NoError(t, run(newTestCmd(&out), []string{tc.name, tc.version}))
+			body, err = os.ReadFile(outputPath)
+			require.NoError(t, err)
+			lines := strings.Split(strings.TrimSpace(string(body)), "\n")
+			assert.Len(t, lines, tc.count)
+			assert.IsIncreasing(t, lines)
+			assert.Empty(t, out.String())
+		})
+	}
+	for _, u := range transport.calls {
+		assert.NotContains(t, u, ".tgz")
+		assert.NotContains(t, u, "/assets/")
+	}
 }

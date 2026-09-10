@@ -22,8 +22,9 @@ type ComponentResult struct {
 
 // Options carries the inputs a Subsystem needs to discover its images.
 type Options struct {
-	Fetcher fetch.Fetcher
-	Version string
+	Fetcher     fetch.Fetcher
+	Version     string
+	ChartBranch string // shared --chart-branch; required by standalone chart subsystems
 }
 
 // Subsystem discovers the container images that make up one version of a
@@ -34,9 +35,10 @@ type Subsystem interface {
 }
 
 // FlagRegistrar is implemented by subsystems that expose their own CLI
-// flags. Flags must be named "--<subsystem>-<flag>" since cobra parses all
+// flags. Subsystem-owned flags must be named "--<subsystem>-<flag>" since cobra parses all
 // flags before the subsystem argument is known, so every registered
 // subsystem's flags are always present.
+// Shared flags such as --chart-branch are registered once by create-list.
 type FlagRegistrar interface {
 	RegisterFlags(fs *pflag.FlagSet)
 }

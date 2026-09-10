@@ -8,12 +8,15 @@ import (
 	_ "github.com/bk201/image-tool/cmd/version"
 	"github.com/bk201/image-tool/pkg/subsystem"
 	"github.com/bk201/image-tool/pkg/subsystem/rancher"
+	"github.com/bk201/image-tool/pkg/subsystem/ranchercharts"
 )
 
 // registerSubsystems explicitly wires up every known subsystem. Add a new
 // subsystem here — there is no implicit init()-based self-registration.
 func registerSubsystems() {
 	subsystem.Register(rancher.New())
+	subsystem.Register(ranchercharts.NewMonitoring())
+	subsystem.Register(ranchercharts.NewLogging())
 }
 
 func main() {

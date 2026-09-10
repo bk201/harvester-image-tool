@@ -49,3 +49,16 @@ create-list <subsystem> <version>
 ```
 
 See [subsystem-rancher.md](subsystem-rancher.md) for how the `rancher` subsystem's components calculate their images.
+
+## Standalone Rancher charts
+
+The [`rancher-monitoring`](subsystem-rancher-monitoring.md) and
+[`rancher-logging`](subsystem-rancher-logging.md) subsystems take exact chart
+versions and require the shared `--chart-branch` flag. Each includes its
+corresponding CRD chart at the same version. They read specified extracted
+GitHub files and use a built-in Harvester component selection.
+
+Shared command flags are registered once by `create-list` and passed through
+`subsystem.Options` (`ChartBranch` for `--chart-branch`). Subsystem-owned flags
+retain the `--<subsystem>-<flag>` naming convention. The existing `rancher`
+subsystem continues using `--rancher-charts-branch`; it ignores `ChartBranch`.

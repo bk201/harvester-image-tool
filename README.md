@@ -13,7 +13,11 @@ See [doc/create-list.md](doc/create-list.md) for the subsystem/component concept
 ```sh
 image-tool create-list rancher v2.15.1
 image-tool create-list rancher v2.15.1 -o rancher-images.txt
+image-tool create-list rancher-monitoring '109.0.3+up80.9.1-rancher.14' --chart-branch release-v2.15
+image-tool create-list rancher-logging '109.0.0+up4.10.0-rancher.23' --chart-branch release-v2.15
 ```
+
+See [monitoring discovery](doc/subsystem-rancher-monitoring.md) and [logging discovery](doc/subsystem-rancher-logging.md) for the built-in Harvester component selection. These two subsystems take chart versions, require `--chart-branch`, and do not implement release-list verification.
 
 By default, generated images are cross-checked against the subsystem's official release image list; discrepancies are printed as warnings on stderr. Use `--no-verify` to skip the check, or `--strict` to make missing images a hard failure.
 

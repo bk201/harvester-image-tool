@@ -1,0 +1,15 @@
+https://raw.githubusercontent.com/rancher/charts/release-v2.15/charts/rancher-monitoring/109.0.3+up80.9.1-rancher.14/Chart.yaml
+https://raw.githubusercontent.com/rancher/charts/release-v2.15/charts/rancher-monitoring/109.0.3+up80.9.1-rancher.14/values.yaml
+https://raw.githubusercontent.com/rancher/charts/release-v2.15/charts/rancher-monitoring/109.0.3+up80.9.1-rancher.14/charts/grafana/Chart.yaml
+https://raw.githubusercontent.com/rancher/charts/release-v2.15/charts/rancher-monitoring/109.0.3+up80.9.1-rancher.14/charts/grafana/values.yaml
+https://raw.githubusercontent.com/rancher/charts/release-v2.15/charts/rancher-monitoring/109.0.3+up80.9.1-rancher.14/charts/kube-state-metrics/Chart.yaml
+https://raw.githubusercontent.com/rancher/charts/release-v2.15/charts/rancher-monitoring/109.0.3+up80.9.1-rancher.14/charts/kube-state-metrics/values.yaml
+https://raw.githubusercontent.com/rancher/charts/release-v2.15/charts/rancher-monitoring/109.0.3+up80.9.1-rancher.14/charts/prometheus-node-exporter/Chart.yaml
+https://raw.githubusercontent.com/rancher/charts/release-v2.15/charts/rancher-monitoring/109.0.3+up80.9.1-rancher.14/charts/prometheus-node-exporter/values.yaml
+https://raw.githubusercontent.com/rancher/charts/release-v2.15/charts/rancher-monitoring/109.0.3+up80.9.1-rancher.14/charts/prometheus-adapter/Chart.yaml
+https://raw.githubusercontent.com/rancher/charts/release-v2.15/charts/rancher-monitoring/109.0.3+up80.9.1-rancher.14/charts/prometheus-adapter/values.yaml
+https://raw.githubusercontent.com/rancher/charts/release-v2.15/charts/rancher-monitoring-crd/109.0.3+up80.9.1-rancher.14/Chart.yaml
+https://raw.githubusercontent.com/rancher/charts/release-v2.15/charts/rancher-monitoring-crd/109.0.3+up80.9.1-rancher.14/values.yaml
+https://raw.githubusercontent.com/rancher/charts/release-v2.15/charts/rancher-logging/109.0.0+up4.10.0-rancher.23/Chart.yaml
+https://raw.githubusercontent.com/rancher/charts/release-v2.15/charts/rancher-logging/109.0.0+up4.10.0-rancher.23/values.yaml
+https://raw.githubusercontent.com/rancher/charts/release-v2.15/charts/rancher-logging-crd/109.0.0+up4.10.0-rancher.23/Chart.yaml

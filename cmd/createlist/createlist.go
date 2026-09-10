@@ -18,10 +18,11 @@ import (
 )
 
 var (
-	outputPath string
-	noVerify   bool
-	strict     bool
-	noHeader   bool
+	outputPath  string
+	noVerify    bool
+	strict      bool
+	noHeader    bool
+	chartBranch string
 )
 
 var command = &cobra.Command{
@@ -46,6 +47,7 @@ func subsystemNamesForHelp() string {
 }
 
 func init() {
+	command.Flags().StringVar(&chartBranch, "chart-branch", "", "rancher/charts branch (required for rancher-monitoring and rancher-logging)")
 	command.Flags().StringVarP(&outputPath, "output", "o", "", "write the image list to this file (default: stdout)")
 	command.Flags().BoolVar(&noVerify, "no-verify", false, "skip cross-checking images against the subsystem's official release list")
 	command.Flags().BoolVar(&strict, "strict", false, "exit non-zero if any image is missing from the official release list")
@@ -57,11 +59,7 @@ func init() {
 // RegisterSubsystemFlags wires up each registered subsystem's own flags and
 // appends the list of known subsystems to the command's help text.
 //
-// Subsystems self-register via their own package init() functions, typically
-// via a blank import in main. Go does not guarantee those run before this
-// package's init(), so this must be called explicitly from main(), after all
-// blank imports have run and before cmd.RootCmd.Execute() — by which point
-// every package's init() is guaranteed to have completed.
+// Call this from main after explicitly registering all subsystems.
 func RegisterSubsystemFlags() {
 	command.Long += "\n\nKnown subsystems: " + subsystemNamesForHelp()
 
@@ -85,7 +83,7 @@ func run(cmd *cobra.Command, args []string) error {
 		MinInterval: rootcmd.MinRequestInterval,
 		Timeout:     rootcmd.HTTPTimeout,
 	})
-	opts := subsystem.Options{Fetcher: fetcher, Version: version}
+	opts := subsystem.Options{Fetcher: fetcher, Version: version, ChartBranch: chartBranch}
 
 	ctx := cmd.Context()
 	if ctx == nil {
