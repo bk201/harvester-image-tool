@@ -52,9 +52,14 @@ func (turtlesComponent) Images(ctx context.Context, rc *Context) ([]string, erro
 	if err != nil {
 		return nil, fmt.Errorf("turtles: image: %w", err)
 	}
-	shellRef, err := values.ShellImage.Image.Ref()
-	if err != nil {
-		return nil, fmt.Errorf("turtles: shellImage.image: %w", err)
+	images := []string{turtlesRef}
+	shellImage := values.ShellImage.Image
+	if shellImage.Repository != "" || shellImage.Tag != "" {
+		shellRef, err := shellImage.Ref()
+		if err != nil {
+			return nil, fmt.Errorf("turtles: shellImage.image: %w", err)
+		}
+		images = append(images, shellRef)
 	}
 
 	capiVersion, err := capiControllerVersion(ctx, rc, build.TurtlesVersion)
@@ -62,7 +67,7 @@ func (turtlesComponent) Images(ctx context.Context, rc *Context) ([]string, erro
 		return nil, err
 	}
 
-	return []string{turtlesRef, shellRef, clusterAPIControllerImg + ":" + capiVersion}, nil
+	return append(images, clusterAPIControllerImg+":"+capiVersion), nil
 }
 
 // capiControllerVersion extracts the cluster-api-controller version from the

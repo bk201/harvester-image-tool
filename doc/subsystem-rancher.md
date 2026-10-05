@@ -83,7 +83,7 @@ defaultShellVersion: rancher/shell:v0.8.1
 `build.yaml: .turtlesVersion` → chart `rancher-turtles` at that version → `values.yaml`:
 
 - `.image.repository`:`.image.tag` (turtles)
-- `.shellImage.image.repository`:`.shellImage.image.tag` (kubectl shell image)
+- `.shellImage.image.repository`:`.shellImage.image.tag` (kubectl shell image, when configured)
 
 Plus, from the same chart version's `templates/core-provider-configmap.yaml` → `.metadata.labels["provider.cluster.x-k8s.io/version"]` → `rancher/cluster-api-controller:<that label's value>`.
 
@@ -107,6 +107,10 @@ shellImage:
 ```
 
 → `rancher/turtles:v0.27.1`, `rancher/kuberlr-kubectl:v8.1.1`
+
+The shell image is optional. Turtles 0.27.2 removed it from the chart values
+and uses the Turtles image for Helm hooks instead, so no separate kubectl shell
+image is added to the list when those fields are empty.
 
 And `https://raw.githubusercontent.com/rancher/charts/release-v2.15/charts/rancher-turtles/110.0.1+up0.27.1/templates/core-provider-configmap.yaml`:
 
